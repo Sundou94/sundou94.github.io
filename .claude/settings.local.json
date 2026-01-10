@@ -9,7 +9,8 @@
       "Bash(npm install:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\n[2026-01-10] Astro + Markdoc 기반 정적 블로그로 전면 리뉴얼\n\nPhase 1: 프로젝트 기초\n- Astro 5.16+ 프로젝트 초기화\n- TypeScript strict mode 설정\n- 기능 명세서\\(FUNCTIONAL_SPEC.md\\) 작성\n\nPhase 2: CMS 및 콘텐츠 모델링\n- Markdoc 통합\n- Astro Content Collections 스키마 정의\n- Keystatic 설정 파일 준비\n\nPhase 3: 프런트엔드 UI\n- BaseLayout 및 PostLayout 컴포넌트\n- 홈페이지, 포스트 목록/상세 페이지\n- About 페이지\n- 반응형 디자인 및 CSS 스타일링\n- 샘플 포스트 \\(welcome.mdoc\\)\n\nPhase 4: 보안 및 배포\n- 보안 가이드\\(SECURITY_GUIDE.md\\) 작성\n  - SSG 기반 보안 아키텍처\n  - 최소 권한 원칙 적용\n  - 공급망 공격 방지 전략\n- GitHub Actions 워크플로우 업데이트\n  - SHA 해시로 액션 버전 고정\n  - npm audit 통합\n  - 의존성 캐싱\n- .gitignore 보안 강화\n- README.md 작성\n\n주요 특징:\n- 🚀 초고속 SSG \\(Static Site Generation\\)\n- 🔒 런타임 취약점 제거\n- 📝 Git 기반 콘텐츠 버전 관리\n- 🎨 반응형 디자인\n- 🔍 SEO 최적화 준비\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
