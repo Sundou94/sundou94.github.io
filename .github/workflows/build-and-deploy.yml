@@ -41,15 +41,18 @@ jobs:
       - name: Build Astro site
         run: npm run build
 
-      # 빌드 결과 확인
+      # 빌드 결과 확인 및 .nojekyll 추가
       - name: Verify build output
         run: |
           echo "Checking dist directory..."
           ls -la dist/
+          touch dist/.nojekyll
           echo "Build completed successfully"
 
       - name: Setup Pages
         uses: actions/configure-pages@f156874f8191504dae5b037505266ed5dda6c382  # v5.0.0
+        with:
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3.0.0
