@@ -1,0 +1,535 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Admin - Digital Doppler">
+  <div class="admin-page">
+    <div class="container">
+      <header class="page-header">
+        <h1>포스트 작성</h1>
+        <p>새 글을 작성하고 GitHub에 직접 커밋합니다</p>
+      </header>
+
+      <div class="editor-container">
+        <form id="post-form" class="post-form">
+          <div class="form-group">
+            <label for="title">제목 *</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              required
+              placeholder="포스트 제목을 입력하세요"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="category">카테고리 *</label>
+              <select id="category" name="category" required>
+                <option value="urban-observation">도시 관찰</option>
+                <option value="photography">사진</option>
+                <option value="tools">도구</option>
+                <option value="data">데이터</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="date">발행일 *</label>
+              <input type="date" id="date" name="date" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="tags">태그 (쉼표로 구분)</label>
+            <input
+              type="text"
+              id="tags"
+              name="tags"
+              placeholder="태그1, 태그2, 태그3"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="series">시리즈 (선택)</label>
+            <input
+              type="text"
+              id="series"
+              name="series"
+              placeholder="시리즈명"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="excerpt">요약 * (최대 200자)</label>
+            <textarea
+              id="excerpt"
+              name="excerpt"
+              required
+              maxlength="200"
+              rows="3"
+              placeholder="포스트 요약을 입력하세요"
+            ></textarea>
+            <span class="char-count">0 / 200</span>
+          </div>
+
+          <div class="form-group">
+            <label for="content">본문 * (Markdown)</label>
+            <textarea
+              id="content"
+              name="content"
+              required
+              rows="20"
+              placeholder="# 제목
+
+본문 내용을 Markdown으로 작성하세요..."
+            ></textarea>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" id="featured" name="featured" />
+              Featured 포스트로 지정
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="preview-btn" class="btn btn-secondary">
+              미리보기
+            </button>
+            <button type="submit" class="btn btn-primary">
+              GitHub에 커밋하기
+            </button>
+          </div>
+        </form>
+
+        <div id="preview" class="preview-panel" style="display: none;">
+          <h2>미리보기</h2>
+          <div id="preview-content" class="preview-content"></div>
+        </div>
+      </div>
+
+      <div id="auth-section" class="auth-section">
+        <h3>GitHub 인증</h3>
+        <div class="form-group">
+          <label for="github-token">GitHub Personal Access Token *</label>
+          <input
+            type="password"
+            id="github-token"
+            placeholder="ghp_xxxxxxxxxxxx"
+          />
+          <small>
+            <a
+              href="https://github.com/settings/tokens/new?scopes=repo&description=Blog%20Editor"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              토큰 생성하기
+            </a>
+            (repo 권한 필요)
+          </small>
+        </div>
+        <button id="save-token" class="btn btn-secondary">토큰 저장</button>
+      </div>
+
+      <div id="status" class="status-message" style="display: none;"></div>
+    </div>
+  </div>
+
+  <style>
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+
+    .admin-page {
+      padding: var(--space-3xl) 0;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: var(--space-3xl);
+      padding-bottom: var(--space-2xl);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: var(--space-sm);
+    }
+
+    .page-header p {
+      color: var(--color-text-muted);
+    }
+
+    .editor-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2xl);
+      margin-bottom: var(--space-3xl);
+    }
+
+    .post-form {
+      background: white;
+      padding: var(--space-2xl);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-lg);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+    }
+
+    label {
+      display: block;
+      margin-bottom: var(--space-sm);
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    input[type='text'],
+    input[type='date'],
+    input[type='password'],
+    select,
+    textarea {
+      width: 100%;
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    textarea {
+      resize: vertical;
+      font-family: var(--font-mono);
+      line-height: 1.5;
+    }
+
+    .char-count {
+      display: block;
+      text-align: right;
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-top: var(--space-xs);
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-weight: normal;
+    }
+
+    .checkbox-group input[type='checkbox'] {
+      width: auto;
+      margin: 0;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--space-md);
+      margin-top: var(--space-xl);
+    }
+
+    .btn {
+      padding: var(--space-sm) var(--space-xl);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--color-accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-accent-hover);
+    }
+
+    .btn-secondary {
+      background: #f5f5f5;
+      color: var(--color-text);
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .preview-panel {
+      background: white;
+      padding: var(--space-2xl);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      max-height: 800px;
+      overflow-y: auto;
+    }
+
+    .preview-panel h2 {
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .preview-content {
+      line-height: 1.6;
+    }
+
+    .auth-section {
+      background: #fff9e6;
+      padding: var(--space-2xl);
+      border-radius: var(--radius-lg);
+      border: 1px solid #ffd700;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .auth-section h3 {
+      margin-bottom: var(--space-lg);
+    }
+
+    .auth-section small {
+      display: block;
+      margin-top: var(--space-xs);
+      color: var(--color-text-muted);
+    }
+
+    .status-message {
+      padding: var(--space-lg);
+      border-radius: var(--radius-md);
+      margin-top: var(--space-xl);
+      text-align: center;
+    }
+
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status-message.loading {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    @media (max-width: 768px) {
+      .editor-container {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .page-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+
+  <script>
+    // 간단한 Markdown 파서
+    function parseMarkdown(markdown: string): string {
+      let html = markdown;
+
+      // 헤딩
+      html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+      html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+      html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+      // 볼드
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      // 이탤릭
+      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+      // 링크
+      html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+
+      // 코드 블록
+      html = html.replace(/```(.*?)```/gs, '<pre><code>$1</code></pre>');
+
+      // 인라인 코드
+      html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+
+      // 줄바꿈
+      html = html.replace(/\n/g, '<br>');
+
+      return html;
+    }
+
+    // 토큰 저장
+    const saveTokenBtn = document.getElementById('save-token');
+    const tokenInput = document.getElementById('github-token') as HTMLInputElement;
+
+    saveTokenBtn?.addEventListener('click', () => {
+      const token = tokenInput?.value.trim();
+      if (token) {
+        localStorage.setItem('github-token', token);
+        showStatus('토큰이 저장되었습니다.', 'success');
+      } else {
+        showStatus('토큰을 입력해주세요.', 'error');
+      }
+    });
+
+    // 저장된 토큰 불러오기
+    const savedToken = localStorage.getItem('github-token');
+    if (savedToken && tokenInput) {
+      tokenInput.value = savedToken;
+    }
+
+    // 문자 수 카운터
+    const excerptTextarea = document.getElementById('excerpt') as HTMLTextAreaElement;
+    const charCount = document.querySelector('.char-count');
+
+    excerptTextarea?.addEventListener('input', () => {
+      const length = excerptTextarea.value.length;
+      if (charCount) {
+        charCount.textContent = `${length} / 200`;
+      }
+    });
+
+    // 미리보기
+    const previewBtn = document.getElementById('preview-btn');
+    const previewPanel = document.getElementById('preview');
+    const previewContent = document.getElementById('preview-content');
+
+    previewBtn?.addEventListener('click', () => {
+      const contentTextarea = document.getElementById('content') as HTMLTextAreaElement;
+      const content = contentTextarea?.value || '';
+
+      if (previewPanel && previewContent) {
+        previewPanel.style.display = 'block';
+        previewContent.innerHTML = parseMarkdown(content);
+      }
+    });
+
+    // 상태 메시지 표시
+    function showStatus(message: string, type: 'success' | 'error' | 'loading') {
+      const statusEl = document.getElementById('status');
+      if (statusEl) {
+        statusEl.textContent = message;
+        statusEl.className = `status-message ${type}`;
+        statusEl.style.display = 'block';
+      }
+    }
+
+    // 폼 제출
+    const form = document.getElementById('post-form');
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const token = localStorage.getItem('github-token');
+      if (!token) {
+        showStatus('GitHub 토큰을 먼저 저장해주세요.', 'error');
+        return;
+      }
+
+      showStatus('포스트를 GitHub에 커밋하는 중...', 'loading');
+
+      try {
+        const formData = new FormData(e.target as HTMLFormElement);
+        const title = formData.get('title') as string;
+        const category = formData.get('category') as string;
+        const date = formData.get('date') as string;
+        const tags = (formData.get('tags') as string)
+          .split(',')
+          .map((t) => t.trim())
+          .filter((t) => t);
+        const series = formData.get('series') as string;
+        const excerpt = formData.get('excerpt') as string;
+        const content = formData.get('content') as string;
+        const featured = (formData.get('featured') as string) === 'on';
+
+        // 파일명 생성 (제목을 slug로 변환)
+        const slug = title
+          .toLowerCase()
+          .replace(/[^a-z0-9가-힣]+/g, '-')
+          .replace(/^-|-$/g, '');
+        const filename = `${slug}.mdoc`;
+
+        // Markdoc 파일 내용 생성
+        const fileContent = `---
+title: ${title}
+publishDate: ${date}
+category: ${category}
+tags:
+${tags.map((tag) => `  - ${tag}`).join('\n')}
+series: '${series || ''}'
+excerpt: ${excerpt}
+featured: ${featured}
+---
+
+${content}
+`;
+
+        // GitHub API로 파일 생성
+        const response = await fetch(
+          `https://api.github.com/repos/Sundou94/sundou94.github.io/contents/src/content/posts/${filename}`,
+          {
+            method: 'PUT',
+            headers: {
+              Authorization: `token ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              message: `Add new post: ${title}`,
+              content: btoa(unescape(encodeURIComponent(fileContent))),
+              branch: 'main',
+            }),
+          }
+        );
+
+        if (response.ok) {
+          showStatus(
+            '포스트가 성공적으로 커밋되었습니다! GitHub Actions가 사이트를 빌드하고 있습니다.',
+            'success'
+          );
+          (e.target as HTMLFormElement).reset();
+          if (previewPanel) {
+            previewPanel.style.display = 'none';
+          }
+        } else {
+          const error = await response.json();
+          throw new Error(error.message || '커밋 실패');
+        }
+      } catch (error) {
+        showStatus(
+          `오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
+          'error'
+        );
+      }
+    });
+
+    // 오늘 날짜를 기본값으로 설정
+    const dateInput = document.getElementById('date') as HTMLInputElement;
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.value = today;
+    }
+  </script>
+</BaseLayout>
