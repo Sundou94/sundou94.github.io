@@ -1,0 +1,272 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = 'Digital Doppler - 도시를 관찰하고 기록하는 블로그',
+  image = '/images/og-default.jpg',
+  type = 'website',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    {/* Primary Meta Tags */}
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    {/* Open Graph / Facebook */}
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+
+    {/* Twitter */}
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.site)} />
+
+    {/* Fonts */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    {/* Sitemap */}
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <style is:global>
+      :root {
+        --color-bg: #ffffff;
+        --color-text: #1a1a1a;
+        --color-text-muted: #666666;
+        --color-border: #e0e0e0;
+        --color-accent: #0066cc;
+        --color-accent-hover: #0052a3;
+
+        --font-sans: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+
+        --space-xs: 0.25rem;
+        --space-sm: 0.5rem;
+        --space-md: 1rem;
+        --space-lg: 1.5rem;
+        --space-xl: 2rem;
+        --space-2xl: 3rem;
+        --space-3xl: 4rem;
+
+        --radius-sm: 0.25rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+
+        --max-width: 1200px;
+        --content-width: 720px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        font-family: var(--font-sans);
+        background: var(--color-bg);
+        color: var(--color-text);
+        line-height: 1.6;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: var(--space-md);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+      h2 {
+        font-size: 2rem;
+      }
+      h3 {
+        font-size: 1.5rem;
+      }
+
+      a {
+        color: var(--color-accent);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      a:hover {
+        color: var(--color-accent-hover);
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      code {
+        font-family: var(--font-mono);
+        background: #f5f5f5;
+        padding: 0.125rem 0.25rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9em;
+      }
+
+      pre {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: var(--space-lg);
+        border-radius: var(--radius-md);
+        overflow-x: auto;
+        margin: var(--space-lg) 0;
+      }
+
+      pre code {
+        background: transparent;
+        padding: 0;
+        color: inherit;
+      }
+
+      @media (max-width: 768px) {
+        :root {
+          --space-2xl: 2rem;
+          --space-3xl: 2.5rem;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+        h2 {
+          font-size: 1.5rem;
+        }
+        h3 {
+          font-size: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="container">
+          <a href="/" class="logo">Digital Doppler</a>
+          <ul class="nav-links">
+            <li><a href="/posts">Posts</a></li>
+            <li><a href="/about">About</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>&copy; {new Date().getFullYear()} Digital Doppler. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <style>
+      header {
+        border-bottom: 1px solid var(--color-border);
+        padding: var(--space-lg) 0;
+        position: sticky;
+        top: 0;
+        background: var(--color-bg);
+        z-index: 100;
+      }
+
+      nav .container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--space-lg);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-text);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: var(--space-xl);
+        list-style: none;
+      }
+
+      .nav-links a {
+        color: var(--color-text-muted);
+        font-weight: 500;
+      }
+
+      .nav-links a:hover {
+        color: var(--color-text);
+      }
+
+      footer {
+        border-top: 1px solid var(--color-border);
+        padding: var(--space-2xl) 0;
+        margin-top: var(--space-3xl);
+        text-align: center;
+        color: var(--color-text-muted);
+      }
+
+      footer .container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 0 var(--space-lg);
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          gap: var(--space-lg);
+        }
+      }
+    </style>
+  </body>
+</html>

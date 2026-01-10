@@ -22,3 +22,23 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# Backup files
+.backup/
+*.bak
+
+# Keystatic local storage
+.keystatic/
+
+# Config files with secrets
+config.js
+config.local.js
+credentials.json
+service-account-key.json
+
+# OS
+Thumbs.db

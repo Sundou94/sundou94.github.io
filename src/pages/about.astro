@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About - Digital Doppler">
+  <div class="about-page">
+    <div class="container">
+      <header class="page-header">
+        <h1>About Digital Doppler</h1>
+        <p>도시를 관찰하고 기록하는 블로그</p>
+      </header>
+
+      <div class="content">
+        <section>
+          <h2>블로그 소개</h2>
+          <p>
+            Digital Doppler는 도시의 미세한 변화를 포착하고 기록하는 공간입니다.
+            도플러 효과처럼 움직이는 관찰자의 시점에서 도시를 바라보고,
+            그 변화를 디지털 매체로 기록합니다.
+          </p>
+        </section>
+
+        <section>
+          <h2>주요 주제</h2>
+          <ul>
+            <li><strong>도시 관찰</strong>: 도시 공간의 색채, 빛, 소리를 기록합니다.</li>
+            <li><strong>사진</strong>: 카메라를 통해 도시의 순간을 포착합니다.</li>
+            <li><strong>도구</strong>: 관찰과 기록을 위한 도구를 탐구합니다.</li>
+            <li><strong>데이터</strong>: 도시 현상을 데이터로 시각화합니다.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>기술 스택</h2>
+          <p>
+            이 블로그는 Astro와 Keystatic을 사용하여 제작되었습니다.
+            정적 사이트 생성(SSG) 방식으로 빠른 성능과 높은 보안성을 제공합니다.
+          </p>
+          <ul>
+            <li>Astro - 정적 사이트 생성 프레임워크</li>
+            <li>Keystatic - Git 기반 콘텐츠 관리 시스템</li>
+            <li>Markdoc - 확장 가능한 마크다운 파서</li>
+            <li>TypeScript - 타입 안전성</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .container {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 0 var(--space-lg);
+    }
+
+    .about-page {
+      padding: var(--space-3xl) 0;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: var(--space-3xl);
+      padding-bottom: var(--space-2xl);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .page-header p {
+      font-size: 1.125rem;
+      color: var(--color-text-muted);
+    }
+
+    .content section {
+      margin-bottom: var(--space-3xl);
+    }
+
+    .content h2 {
+      margin-bottom: var(--space-lg);
+      font-size: 1.75rem;
+    }
+
+    .content p {
+      line-height: 1.8;
+      margin-bottom: var(--space-lg);
+    }
+
+    .content ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .content li {
+      padding-left: var(--space-lg);
+      margin-bottom: var(--space-md);
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .content li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--color-accent);
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</BaseLayout>
